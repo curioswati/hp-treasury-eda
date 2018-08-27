@@ -1,0 +1,16 @@
+[[source]]
+verify_ssl = true
+url = "https://pypi.org/simple"
+name = "pypi"
+
+[packages]
+requests = "*"
+scrapy = "*"
+pandas = "*"
+"flake8" = "*"
+isort = "*"
+
+[requires]
+python_version = "3.5"
+
+[dev-packages]
