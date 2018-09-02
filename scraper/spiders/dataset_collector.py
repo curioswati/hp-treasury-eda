@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-import pdb  # noqa
-import re
 import csv
 import os
+import re
 from datetime import datetime
 from urllib.parse import urlencode
-from scraper.settings import settings
 
 import pandas as pd
 import scrapy
+from scrapy.spidermiddlewares.httperror import HttpError
+
+from scraper.settings import settings
 
 
 def clean_text(text):
@@ -81,8 +82,16 @@ class DatasetCollector(scrapy.Spider):
                     if not os.path.exists(filepath):
                         yield scrapy.Request(
                             self.query_url.format(urlencode(query_params)), self.parse_dataset,
-                            meta={'filepath': filepath}
+                            errback=self.handle_err, meta={'filepath': filepath}
                         )
+
+    def handle_err(self, failure):
+        if failure.check(HttpError):
+            response = failure.value.response
+            request = response.request
+            self.logger.error('Request: {}'.format(request))
+            self.logger.error('Request headers: {}'.format(request.headers))
+            self.logger.error('Response headers: {}'.format(response.headers))
 
     def parse_dataset(self, response):
         '''
@@ -95,6 +104,9 @@ class DatasetCollector(scrapy.Spider):
 
         # all other rows
         data_rows = response.css('table tr[class*=pope]')
+
+        if not data_rows:
+            return
 
         # prepare file name and its path to write the file.
         filepath = response.meta.get('filepath')

@@ -61,8 +61,8 @@ CONCURRENT_REQUESTS = 32
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.5
-DOWNLOAD_TIMEOUT = 120
+DOWNLOAD_DELAY = 1
+DOWNLOAD_TIMEOUT = 180
 
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 8
@@ -77,8 +77,9 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 8
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
     'DNT': '1',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', # noqa
-    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-GB,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate, br'
 }
 
 # Enable or disable spider middlewares
