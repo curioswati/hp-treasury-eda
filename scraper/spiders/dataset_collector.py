@@ -28,14 +28,13 @@ def get_datasets_path():
     return dataset_path
 
 
-def create_default_ranges():
-    current_date = datetime.today().strftime('%Y%m%d')
+def create_date_ranges(begin, stop):
     # create date ranges for 10 years from now.
-    start_dates = pd.date_range('20080101', current_date, freq='AS-JAN').strftime('%Y%m%d')
-    end_dates = pd.date_range('20080101', current_date, freq='Y').strftime('%Y%m%d')
+    start_dates = pd.date_range(begin, stop, freq='MS').strftime('%Y%m%d')
+    end_dates = pd.date_range(begin, stop, freq='M').strftime('%Y%m%d')
 
-    if current_date not in end_dates:
-        end_dates = end_dates.append(pd.Index([current_date]))
+    if stop not in end_dates:
+        end_dates = end_dates.append(pd.Index([stop]))
 
     return start_dates, end_dates
 
@@ -51,12 +50,13 @@ class DatasetCollector(scrapy.Spider):
         Collect queryable params and make dataset queries.
         '''
 
-        if not hasattr(self, 'start_date') and not hasattr(self, 'end_date'):
-            start_dates, end_dates = create_default_ranges()
+        if not hasattr(self, 'begin') and not hasattr(self, 'stop'):
+            begin = '20080101'  # by default we collect for past 10 years from 2018.
+            stop = datetime.today().strftime('%Y%m%d')
+            start_dates, end_dates = create_date_ranges(begin, stop)
 
         else:
-            start_dates = [self.start_date]
-            end_dates = [self.end_date]
+            start_dates, end_dates = create_date_ranges(self.begin, self.stop)
 
         # collect all treasury names from dropdown.
         treasuries = response.css('#cmbHOD option')
