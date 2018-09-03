@@ -17,7 +17,7 @@ def clean_text(text):
 
 
 def make_file_name(attrs):
-    filename = '{query}_{treasury}_{year}.csv'.format(**attrs)
+    filename = '{query}_{treasury}_{date}.csv'.format(**attrs)
     filename = re.sub(r',+', '', filename).replace(' ', '_').replace('/', '_')
     return filename
 
@@ -26,6 +26,18 @@ def get_datasets_path():
     dataset_relative_path = os.path.join(settings.PROJECT_PATH, '../datasets')
     dataset_path = os.path.normpath(dataset_relative_path)
     return dataset_path
+
+
+def create_default_ranges():
+    current_date = datetime.today().strftime('%Y%m%d')
+    # create date ranges for 10 years from now.
+    start_dates = pd.date_range('20080101', current_date, freq='AS-JAN').strftime('%Y%m%d')
+    end_dates = pd.date_range('20080101', current_date, freq='Y').strftime('%Y%m%d')
+
+    if current_date not in end_dates:
+        end_dates = end_dates.append(pd.Index([current_date]))
+
+    return start_dates, end_dates
 
 
 class DatasetCollector(scrapy.Spider):
@@ -39,13 +51,12 @@ class DatasetCollector(scrapy.Spider):
         Collect queryable params and make dataset queries.
         '''
 
-        current_date = datetime.today().strftime('%Y%m%d')
-        # create date ranges for 10 years from now.
-        start_dates = pd.date_range('20080101', current_date, freq='AS-JAN').strftime('%Y%m%d')
-        end_dates = pd.date_range('20080101', current_date, freq='Y').strftime('%Y%m%d')
+        if not hasattr(self, 'start_date') and not hasattr(self, 'end_date'):
+            start_dates, end_dates = create_default_ranges()
 
-        if current_date not in end_dates:
-            end_dates = end_dates.append(pd.Index([current_date]))
+        else:
+            start_dates = [self.start_date]
+            end_dates = [self.end_date]
 
         # collect all treasury names from dropdown.
         treasuries = response.css('#cmbHOD option')
@@ -73,9 +84,9 @@ class DatasetCollector(scrapy.Spider):
                         'Str': query_name
                     }
 
-                    filename = make_file_name(
-                        {'query': query_name, 'treasury': treasury_name, 'year': start[:4]}
-                    )
+                    filename = make_file_name({'query': query_name,
+                                               'treasury': treasury_name,
+                                               'date': '{}-{}'.format(start, end)})
                     filepath = os.path.join(self.datasets_path, filename)
 
                     # don't request the same dataset again if it's already collected previously
