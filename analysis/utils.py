@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import os
@@ -12,20 +12,20 @@ for module_path in module_paths:
         sys.path.append(module_path)
 
 
-# In[3]:
+# In[2]:
 
 
 from scraper.settings import PROJECT_PATH
 
 
-# In[4]:
+# In[3]:
 
 
 # global vars
 datasets_path = os.path.normpath(os.path.join(PROJECT_PATH, '../datasets'))
 
 
-# In[5]:
+# In[4]:
 
 
 def get_filepath(filename):
@@ -35,7 +35,7 @@ def get_filepath(filename):
     return os.path.join(datasets_path, filename)
 
 
-# In[6]:
+# In[5]:
 
 
 def make_readable_amount(tick_val):
@@ -49,13 +49,13 @@ def make_readable_amount(tick_val):
         return '{}B'.format(int(float(tick_val)/10**9))
 
 
-# In[7]:
+# In[6]:
 
 
-def wrangle_data(df):
+def wrangle_data(df, col_to_cast_as_category):
     df = df.drop('Unnamed: 0', axis=1)
-    ddo_desc_split = df.DDODESC.str.extract('(?P<DDODESC>.*?)-.*(?:OFFICER?|DTO)(?P<DISTRICT>.*)')
+    ddo_desc_split = df.DDODESC.str.extract('(?P<DDODESC>.*?)-.*(?:OFFICER?|DTO)(?P<DISTRICT>.*)').fillna('')
     df['DDO'], df['DISTRICT'] = ddo_desc_split.DDODESC.str.strip(), ddo_desc_split.DISTRICT.str.strip()
-    df['SOEDESC'] = df['SOEDESC'].astype('category')
+    df[col_to_cast_as_category] = df[col_to_cast_as_category].astype('category')
     return df
 
