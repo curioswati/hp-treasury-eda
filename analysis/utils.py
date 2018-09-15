@@ -4,6 +4,7 @@
 # In[1]:
 
 
+import json
 import os
 import sys
 module_paths = [os.path.abspath(os.path.join(path)) for path in ['.', '..']]
@@ -27,6 +28,8 @@ DISTRICTS = {'BLP': 'BILASPUR', 'CHM': 'CHAMBA', 'HMR': 'HAMIRPUR',
              'KNG': 'KANGRA', 'KNR': 'KINNAUR', 'KLU': 'KULLU',
              'LHL': 'LAHAUL & SPITI', 'MDI': 'MANDI', 'SML': 'SHIMLA',
              'SMR': 'SIRMAUR', 'SOL': 'SOLAN', 'UNA': 'UNA'}
+with open(os.path.join(DATASETS_PATH, 'major_head_mapping.json')) as major_head_file:
+    MAJOR_HEADS = json.load(major_head_file)
 
 
 # In[4]:
@@ -46,9 +49,9 @@ def make_readable_amount(tick_val):
     if tick_val < 1000:
         return tick_val
     elif tick_val < 10**6:
-        return '{}k'.format(int(float(tick_val)/1000))
+        return '{}k'.format(float(tick_val)/1000)
     elif tick_val < 10**9:
-        return '{}M'.format(int(float(tick_val)/10**6))
+        return '{}M'.format(float(tick_val)/10**6)
     else:
-        return '{}B'.format(int(float(tick_val)/10**9))
+        return '{}B'.format(float(tick_val)/10**9)
 
