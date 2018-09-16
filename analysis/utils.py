@@ -55,3 +55,20 @@ def make_readable_amount(tick_val):
     else:
         return '{}B'.format(float(tick_val)/10**9)
 
+
+# In[6]:
+
+
+from textwrap import wrap
+
+def format_major_head_ticks(tick_val):
+    tick_code = tick_val.get_text()
+    if tick_code:
+        tick = MAJOR_HEADS.get(tick_code)
+        if len(tick) > 50:
+            return '\n' + '\n'.join(wrap(tick, 50))
+        else:
+            return tick
+    else:
+        return tick_code
+
