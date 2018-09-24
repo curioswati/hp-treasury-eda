@@ -162,7 +162,7 @@ class DatasetCollector2(DatasetCollector):
             raise CloseSpider('No date range given!')
 
         # collect last query that gives consolidated data.
-        query = response.css('#ddlQuery option')[10]
+        query = response.css('#ddlQuery option')[self.query_index]
 
         query_id = query.css('::attr(value)').extract_first()
         query_name = query.css('::text').extract_first()
@@ -217,8 +217,10 @@ class ExpendituresSpider(DatasetCollector2):
     # dataset is collected from here.
     query_url = 'https://himkosh.hp.nic.in/treasuryportal/eKosh/eKoshDDOPopUp.asp?{}'
 
+    query_index = 10
 
-class ReceiptsSpider(DatasetCollector):
+
+class ReceiptsSpider(DatasetCollector2):
     name = 'receipts'
 
     # this page contains all the populating info.
@@ -226,3 +228,5 @@ class ReceiptsSpider(DatasetCollector):
 
     # dataset is collected from here.
     query_url = 'https://himkosh.hp.nic.in/treasuryportal/eKosh/eKoshDDOReceiptPopUp.asp?{}'
+
+    query_index = 1
