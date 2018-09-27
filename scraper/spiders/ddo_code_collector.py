@@ -1,6 +1,7 @@
 import csv
 import os
-from urllib.parse import parse_qs, urlencode
+from urllib import urlencode
+from urlparse import parse_qs
 
 import scrapy
 
