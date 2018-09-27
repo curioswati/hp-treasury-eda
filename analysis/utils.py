@@ -24,6 +24,7 @@ from scraper.settings import PROJECT_PATH
 
 # global vars
 DATASETS_PATH = os.path.normpath(os.path.join(PROJECT_PATH, '../datasets'))
+MUNGED_DATASETS_PATH = os.path.normpath(os.path.join(PROJECT_PATH, '../munged_datasets'))
 DISTRICTS = {'BLP': 'BILASPUR', 'CHM': 'CHAMBA', 'HMR': 'HAMIRPUR',
              'KNG': 'KANGRA', 'KNR': 'KINNAUR', 'KLU': 'KULLU',
              'LHL': 'LAHAUL & SPITI', 'MDI': 'MANDI', 'SML': 'SHIMLA',
@@ -45,18 +46,28 @@ def get_filepath(filename):
 # In[5]:
 
 
+def get_munged_filepath(filename):
+    '''
+    given a filename, the function returns it's filepath joining with datasets dir.
+    '''
+    return os.path.join(MUNGED_DATASETS_PATH, filename)
+
+
+# In[6]:
+
+
 def make_readable_amount(tick_val):
     if tick_val < 1000:
         return tick_val
     elif tick_val < 10**6:
-        return '{}k'.format(float(tick_val)/1000)
+        return '{0:.1f}k'.format(float(tick_val)/1000)
     elif tick_val < 10**9:
-        return '{}M'.format(float(tick_val)/10**6)
+        return '{0:.1f}M'.format(float(tick_val)/10**6)
     else:
-        return '{}B'.format(float(tick_val)/10**9)
+        return '{0:.1f}B'.format(float(tick_val)/10**9)
 
 
-# In[6]:
+# In[7]:
 
 
 from textwrap import wrap
