@@ -9,6 +9,12 @@ scrapy = "*"
 pandas = "*"
 "flake8" = "*"
 isort = "*"
+seaborn = "*"
+vega = "*"
+notebook = "*"
+altair = "*"
+vega-datasets = "*"
+jupyter = "*"
 
 [requires]
 python_version = "2.7"
