@@ -1,7 +1,7 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import os
@@ -11,14 +11,14 @@ import numpy as np
 import glob
 
 
-# In[2]:
+# In[ ]:
 
 
-from utils import get_filepath, DISTRICTS, DATASETS_PATH
+from utils import get_filepath, get_munged_filepath, DISTRICTS, DATASETS_PATH, MUNGED_DATASETS_PATH, MAJOR_HEADS
 from scraper.settings import PROJECT_PATH
 
 
-# In[3]:
+# In[ ]:
 
 
 def get_normalized_expenditure_dataframe_for_10(df):
@@ -28,7 +28,7 @@ def get_normalized_expenditure_dataframe_for_10(df):
         - remove Grand Total row because it has redundant data.
         - fill empty rows with forward fill method.
         - drop duplicate rows.
-'''
+    '''
     if df.index.dtype != 'int64':
         df = df.reset_index()
 
@@ -41,7 +41,7 @@ def get_normalized_expenditure_dataframe_for_10(df):
     # remove row with Grand Total as it is redundant.
     df = df[(df[:] != 'Grand Total').all(axis=1)]
     df = df[(df['VoucherBillNO'] != 'Total')]
-    
+
     numeral_cols = ['BILLS', 'GROSS', 'AGDED', 'BTDED', 'NETPAYMENT']
     for col in numeral_cols:
         df.loc[1, col] = df[df['DM.MAJ.SM.MIN.SMN.BUD.VC.PN.SOE'] == 'Total'][col].sum()
@@ -81,7 +81,61 @@ def arrange_expenditure_all_query():
         df.to_csv(to_file, index=False)
 
 
-# In[4]:
+# In[ ]:
+
+
+def get_normalized_receipt_dataframe(df):
+    '''
+    given a dataframe, the function does following:
+        - remove extra rows showing Total.
+        - remove Grand Total row because it has redundant data.
+        - fill empty rows with forward fill method.
+    '''
+    # select the columns which have empty values and forward fill them.
+    exclude_cols = ['Tenderer', 'Challan', 'NETRECEIPT']
+    cols = [col for col in df.columns if col not in exclude_cols]
+    df[cols] = df[cols].replace(r'^\s+$', np.nan, regex=True)
+    df[cols] = df[cols].ffill()
+
+    # remove row with Grand Total as it is redundant.
+    df = df[(df[:] != 'Grand Total').all(axis=1)]
+    df = df[(df[:] != 'Total').all(axis=1)]
+
+    df = df.reset_index(drop=True)
+
+    return df
+
+
+# In[ ]:
+
+
+def arrange_receipt_files():
+    '''
+    the function selects files for query 10th i.e. which shows the detailed data with all the fields present,
+    in the datasets dir, normalize the data and creates copy csvs from them.
+    '''
+    def to_include(filename):
+        if re.match('01.*Receipt.*\d{8}\.csv$', filename):
+            return True
+
+    # list all files in datasets dir
+    all_files = os.listdir(DATASETS_PATH)
+    to_arrange_with_same_logic = filter(to_include, all_files)
+    for filename in to_arrange_with_same_logic:
+        filepath = get_filepath(filename)
+        df = pd.read_csv(filepath)
+        try:
+            df = get_normalized_receipt_dataframe(df)
+        except Exception as e:
+            print(filepath)
+            raise e
+
+        # save in a file with _copy appended to the original file's name.
+        to_file = get_munged_filepath(filename)
+        df.to_csv(to_file , index=False)
+
+
+# In[ ]:
 
 
 def get_normalized_expenditure_dataframe(filename):
@@ -139,7 +193,7 @@ def arrange_expenditure_data():
         df.to_csv(to_file, index=False)
 
 
-# In[5]:
+# In[ ]:
 
 
 def concatenate_files(query_str):
@@ -147,7 +201,7 @@ def concatenate_files(query_str):
     concatenate the copy files.
     '''
     # get all the files to concatenate
-    files_to_concatenate = glob.iglob(os.path.join(DATASETS_PATH, query_str))
+    files_to_concatenate = glob.iglob(os.path.join(MUNGED_DATASETS_PATH, query_str))
     
     if any(files_to_concatenate):
         # prepare dataframes from all files
@@ -157,15 +211,15 @@ def concatenate_files(query_str):
         concatenated_frames = pd.concat(dataframes, ignore_index=True)
     
         # construct the iterator again to get the first file's name
-        files_to_concatenate = glob.iglob(os.path.join(datasets_path, query_str))
+        files_to_concatenate = glob.iglob(os.path.join(MUNGED_DATASETS_PATH, query_str))
         to_file = next(files_to_concatenate)
-        to_filepath = get_filepath('{}.csv'.format(re.search('(.*[w|W]ise).*csv', to_file).group(1)))
+        to_filepath = get_munged_filepath('{}.csv'.format(re.search('(.*[w|W]ise).*csv', to_file).group(1)))
     
         # save the concatenated dataframes to file
         concatenated_frames.to_csv(to_filepath)
 
 
-# In[6]:
+# In[ ]:
 
 
 def wrangle_data(df, col_to_cast_as_category):
@@ -176,7 +230,7 @@ def wrangle_data(df, col_to_cast_as_category):
     return df
 
 
-# In[7]:
+# In[ ]:
 
 
 def wrangle_data_for_consolidated_query(df, cols_to_cast_as_category):
@@ -200,6 +254,8 @@ def wrangle_data_for_consolidated_query(df, cols_to_cast_as_category):
     col_split = df['DM.MAJ.SM.MIN.SMN.BUD.VC.PN.SOE'].str.extract('(\d+)-(\d+)-(\d+)-(\d+)-(\d+)-(\w+)-(\w+)-(\w+)-([\w-]+)').fillna('')
     df[cols_to_create] = col_split
     del df['DM.MAJ.SM.MIN.SMN.BUD.VC.PN.SOE']
+
+    df['MAJ'] = df['MAJ'].map(MAJOR_HEADS)
 
     # convert columns to category to save memory
     df[cols_to_cast_as_category] = df[cols_to_cast_as_category].astype('category')
