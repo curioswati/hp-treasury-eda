@@ -3,7 +3,7 @@ import csv
 import os
 import re
 from datetime import datetime
-from urllib.parse import urlencode
+from urllib import urlencode
 
 import pandas as pd
 import scrapy
