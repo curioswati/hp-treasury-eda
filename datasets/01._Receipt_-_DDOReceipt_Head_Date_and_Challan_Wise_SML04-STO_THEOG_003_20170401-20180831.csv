@@ -1,0 +1,16 @@
+DDODesc,MAJOR,RECEIPTHEAD,BOOKDATE,Tenderer,Challan,NETRECEIPT
+Grand Total, , , , ,6,759409
+SML04-003-B.D.O. THEOG,Total, , , ,6,759409
+ ,0049-INTEREST RECEIPTS,Total, , ,4,561796
+ , ,0049-04-800-13-MISCELLANEOUS,Total, ,4,561796
+ , , ,27/04/2018,Total,4,561796
+ , , , ,"[F0049000001] HIMGRN:B18D121445, BLOCK DEVELOPMENT OFFICER THEOG MISCELLANEOUS -Interest refund to govt. which earned from bank on saving account up to 31/03/2018",1,380033
+ , , , ,"[F0049000002] HIMGRN:B18D121463, BLOCK DEVELOPMENT OFFICER THEOG MISCELLANEOUS -Interest refund to Govt. account which earned from bank on bank saving account under",1,88979
+ , , , ,"[F0049000004] HIMGRN:B18D121521, BLOCK DEVELOPMENT OFFICER THEOG MISCELLANEOUS -Interest refund to Govt. which earned on bank saving account under head LDP",1,27534
+ , , , ,"[F0049000005] HIMGRN:B18D121493, BLOCK DEVELOPMENT OFFICER THEOG MISCELLANEOUS -Interest refund to Govt. account which earned from bank on saving account under head",1,65250
+ ,0515-OTHER RURAL DEVELOPMENT PROGRAMMES,Total, , ,2,197613
+ , ,0515-00-800-03-MISC.RECEIPT FROM RDD.,Total, ,2,197613
+ , , ,31/07/2017,Total,1,69628
+ , , , ,"[I0515000001] HIMGRN:B17G110500, BLOCK DEVELOPMENT OFFICER MISC.RECEIPT FROM RDD. -Interest received from bank on saving account",1,69628
+ , , ,27/04/2018,Total,1,127985
+ , , , ,"[F0515000001] HIMGRN:B18D121688, BLOCK DEVELOPMENT OFFICER THEOG MISC.RECEIPT FROM RDD. -Interest refund to Govt. account under head CD",1,127985
