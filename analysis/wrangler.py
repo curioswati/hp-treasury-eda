@@ -269,3 +269,44 @@ def wrangle_data_for_consolidated_query(df, cols_to_cast_as_category):
     df.set_index('DATE', drop=True, inplace=True)
     return df
 
+
+# In[ ]:
+
+
+def wrangle_data_for_receipt(df, cols_to_cast_as_category):
+    df = df.drop('Unnamed: 0', axis=1)
+
+    # create new column from existing ones.
+    ddo_cols = ['Treasury', 'DDO', 'DDO Desc']
+    ddo_desc_split = df.DDODesc.str.extract('(?P<Treasury>\w+)-(?P<DDO>\d+)-(?P<DDODesc>.*)').astype('category')
+    df[ddo_cols] = ddo_desc_split
+
+    maj_cols = ['Maj Code', 'Major Head']
+    maj_split = df.MAJOR.str.extract('(?P<MajCode>\d+)-(?P<MajorHead>.*)').astype('category')
+    df[maj_cols] = maj_split
+
+    receipt_cols = ['Receipt Code', 'RECEIPTHEAD']
+    receipt_split = df['RECEIPTHEAD'].str.extract('(?P<ReceiptCode>[\d+-]+)-(?P<ReceiptHead>.*)').astype('category')
+    df[receipt_cols] = receipt_split
+
+    # set district using district code mapping.
+    df['District'] = ddo_desc_split.Treasury.str[:3].map(DISTRICTS).astype('category')
+
+    # extract date from voucher number.
+    df['Date'] = pd.to_datetime(df['BOOKDATE'], format='%d/%m/%Y', errors='coerce')
+
+    # convert columns to category to save memory
+    df[cols_to_cast_as_category] = df[cols_to_cast_as_category].astype('category')
+
+    # reorder columns
+    df = df[['Date', 'District', 'Treasury', 'DDO', 'DDO Desc', 'Maj Code', 'Major Head',
+             'Receipt Code', 'RECEIPTHEAD', 'Tenderer', 'Challan', 'NETRECEIPT']]
+
+    # Rename columns
+    df.columns = ['Date', 'District', 'Treasury', 'DDO', 'DDO Desc',
+                  'Maj Code', 'Major Head', 'Receipt Code', 'Receipt Head',
+                  'Tenderer', 'Challan', 'Net Receipt']
+
+    df.set_index('Date', drop=True, inplace=True)
+    return df
+
