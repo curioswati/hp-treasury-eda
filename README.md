@@ -7,7 +7,15 @@ Collect Himachal Pradesh treasury accounts' expenditure and receipts data and pe
 
 ## Overview
 
-You can get the overview of the task by looking at the notebooks in the `reports/` directory.
+The analysis reports are inside `reports/` directory.
+
+* [Expenditure](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Summary%20Plots.ipynb) and [Receipts](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Receipt%20Summary.ipynb) summaries give overall patterns for different parameters. There is also a [comparative summary](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Comparative%20Summary%20for%20Expenditure%20and%20Receipts.ipynb) of both receipts and expenditure.
+
+* We have top 10 plots for districts based on [DDOs](https://github.com/curioswati/cdl-trial-project/blob/master/reports/District%20Wise%20top%2010%20DDO%20Receipts.ipynb) for receipts, Major heads for [receipts](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Top%2010%20Major%20Heads%20of%20Receipt%20by%20Districts.ipynb) and for [expenditure](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Top%2010%20Major%20Heads%20of%20Expenses%20by%20Districts.ipynb).
+
+* Then there is a Time Series analysis for [receipts](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Receipt%20Time%20series%20for%20districts%20over%20a%20monthly%20timeline.ipynb) and [expenditure](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Time%20series%20for%20districts%20over%20a%20monthly%20timeline.ipynb) for all the districts.
+
+* We can also use a list of Major Heads to see the receipts and expenses done by different districts as is done here for [receipts](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Receipts%20for%20districts%20-%20Major%20Head%20wise.ipynb) and [expenditure](https://github.com/curioswati/cdl-trial-project/blob/master/reports/Expenditure%20by%20districts%20-%20Major%20Head%20wise.ipynb).
 
 ## Organisation of the Repository:
 
@@ -33,4 +41,4 @@ Contains the munged datasets.
 
 ## Status
 
-Only part of the task has been completed in which the analysis could be performed on the expenditure datasets from the different DDOs for FY 2017-18.
+Expenditure and Receipt analysis is done for FY 2017-18 and a half FY 2018-2019.
