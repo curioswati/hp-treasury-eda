@@ -1,4 +1,4 @@
-# cdl-trial-project
+# hp-treasury-eda
 Trial project for CivicDataLab.
 
 ## Problem Statement
